@@ -7,24 +7,18 @@
   <body>
 
     <button class="refresh">Refresh Tweets</button>
+
     <ul class = "feed">
 
     </ul>
-    <script>
-
-      var eachh = function(collection, iterator){
-        if(Array.isArray(collection)){
-          for(var i = 0; i<collection.length; i++){
-            iterator(collection[i], i, collection);
-          }
-        } else {
-          for(var prop in collection){
-            if(collection.hasOwnProperty(prop)){
-              iterator(collection[prop], prop, collection);
-            }
-          }
-        }
+    
+    <style type="text/css">
+      div{
+        border: 1px solid lightblue;
       }
+    </style>
+
+    <script>
 
       $(document).ready(function(){
         var $body = $('body');
@@ -32,28 +26,55 @@
         var index = streams.home.length - 1;
         var lastTime;
 
+        //create code to create key val pair or add val to key for messages and users
+        var userMsgs = {};
+        // can't use addMsgs as is (it uses first tweet because of scope! (can't use within function))
+        var addMsgs = function(){
+          if(userMsgs.hasOwnProperty(tweet.user)){
+            userMsgs[tweet.user].push(tweet.message);
+          } else {
+            userMsgs[tweet.user] = [tweet.message];
+          }
+        };
+
+        // "human" timestamp
         // var createdAgo = function(){
-        //   var date = new Date();
+        //   var date = new Date(); 
         //   var 
         // };
-
+        
         // initial messages
         while(index >= 0){
-          var tweet = streams.home[index];
+          tweet = streams.home[index];
           var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + "-" + tweet.created_at + ': ' + tweet.message);
+          $tweet.html('@' + tweet.user + "-" + tweet.created_at + "<br></br>" +  tweet.message);
+
           $tweet.appendTo($(".feed"));
           index -= 1;
           lasTime = tweet.created_at;
+          if(userMsgs.hasOwnProperty(tweet.user)){
+            userMsgs[tweet.user].push(tweet.message);
+          } else {
+            userMsgs[tweet.user] = [tweet.message];
+          }
+          console.log(userMsgs);
+          console.log(tweet.message);
         }
+
         // refresh button
         var msgCount = streams.home.length;
-        $("button").on("click", function(){
+        $(".refresh").on("click", function(){
           for(var x = msgCount; x<streams.home.length; x++){
             var tweet = streams.home[x];
             if(lastTime != tweet.created_at){
               var $tweet = $('<div></div>');
               $tweet.text('@' + tweet.user + "-" + tweet.created_at + ': ' + tweet.message);
+              if(userMsgs.hasOwnProperty(tweet.user)){
+                userMsgs[tweet.user].push(tweet.message);
+              } else {
+                userMsgs[tweet.user] = [tweet.message];
+              }
+              console.log(userMsgs);
               $tweet.prependTo($(".feed"));
               var date = new Date();
               console.log(tweet.created_at + " " + date);
@@ -62,6 +83,7 @@
             }
           }
         });
+
         // auto-refresh
         // setInterval(function(){
         //   var tweet = streams.home[streams.home.length-1];
