@@ -52,18 +52,22 @@ for(var i = 0; i < 10; i++){
 
 var scheduleNextTweet = function(){
   generateRandomTweet();
-  setTimeout(scheduleNextTweet, Math.random() * 1500);
+  setTimeout(scheduleNextTweet, Math.random() * 1500 + 4000);
 };
 scheduleNextTweet();
 
 // utility function for letting students add "write a tweet" functionality
 // (note: not used by the rest of this file.)
-var writeTweet = function(message){
+var writeTweet = function(message, visitor){
   if(!visitor){
     throw new Error('set the global visitor property!');
+  }
+  if(streams.users.hasOwnProperty(visitor)===false){
+    streams.users[visitor]=[];
   }
   var tweet = {};
   tweet.user = visitor;
   tweet.message = message;
+  tweet.created_at = new Date();
   addTweet(tweet);
 };
