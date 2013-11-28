@@ -107,7 +107,6 @@
         while(index >= 0){
           tweet = streams.home[index];
           var $tweet = $('<div></div>');
-          
           $tweet.html("<button class="+tweet.user+">"+"<p><strong>"+"@"+tweet.user+"</strong></p>"+"</button>"+"<span>"+$.timeago(tweet.created_at) +"</span>"+"<p>"+tweet.message+"</p><br></br>");
           var currentTime = tweet.created_at.getDate();
           console.log(currentTime);
@@ -129,6 +128,7 @@
 
         //function to refresh/add new tweets
         var refreshFunction = function(){
+          $(".feed").empty();
           for(var x = msgCount; x<streams.home.length; x++){
             var tweet = streams.home[x];
             if(lastTime != tweet.created_at){
@@ -139,25 +139,33 @@
               } else {
                 userMsgs[tweet.user] = [tweet];
               }
-              $tweet.prependTo($(".feed"));
-              var date = new Date();
               lastTime = tweet.created_at;
               msgCount += 1;
             }
           }
-        $("button").on("click", function(){
-          var tmpUsr = this.className;
-          if(userMsgs.hasOwnProperty(tmpUsr)){
-            $(".feed").empty();
-            for(var p = 0; p<userMsgs[tmpUsr].length; p++){
-              var tweet = userMsgs[tmpUsr][p];
-              var $tweet = $('<div></div>');
-              $tweet.html("<button class="+tweet.user+">"+"<p><strong>"+"@"+tweet.user+"</strong></p>"+"</button>"+"<span>"+$.timeago(tweet.created_at) +"</span>"+"<p>"+tweet.message+"</p><br></br>");
-              $tweet.prependTo($(".feed"));
-            }
+          index = streams.home.length - 1;
+          while(index >= 0){
+            tweet = streams.home[index];
+            var $tweet = $('<div></div>');
+            $tweet.html("<button class="+tweet.user+">"+"<p><strong>"+"@"+tweet.user+"</strong></p>"+"</button>"+"<span>"+$.timeago(tweet.created_at) +"</span>"+"<p>"+tweet.message+"</p><br></br>");
+            var currentTime = tweet.created_at.getDate();
+            console.log(currentTime);
+            $tweet.appendTo($(".feed"));
+            index -= 1;
           }
-        });
-      };
+          $("button").on("click", function(){
+            var tmpUsr = this.className;
+            if(userMsgs.hasOwnProperty(tmpUsr)){
+              $(".feed").empty();
+              for(var p = 0; p<userMsgs[tmpUsr].length; p++){
+                var tweet = userMsgs[tmpUsr][p];
+                var $tweet = $('<div></div>');
+                $tweet.html("<button class="+tweet.user+">"+"<p><strong>"+"@"+tweet.user+"</strong></p>"+"</button>"+"<span>"+$.timeago(tweet.created_at) +"</span>"+"<p>"+tweet.message+"</p><br></br>");
+                $tweet.prependTo($(".feed"));
+              }
+            }
+          });
+        };
 
       refreshFunction();
 
@@ -195,20 +203,6 @@
         //     msgCount += 1;
         //   }
         // }, 500);
-
-        // $("button").on("click", function(){
-        //   console.log("hello");
-        //   console.log(this.className);
-          // for(var i = 0; i<tweet.user.length; i++){
-          //   if(tweet.user[i]===tmpUsr){
-          //     $(".feed").empty();
-          //     for(var x = 0; x<userMsgs[tmpUsr].length; x++){
-          //       var $tweet = $('<div></div>');
-          //       $tweet.html("<button class="+tweet.user+">"+"<p><strong>"+"@"+tweet.user+"</strong></p>"+"</button>"+"<span>"+$.timeago(tweet.created_at) +"</span>"+"<p>"+tweet.message+"</p><br></br>");
-          //     }
-          //   }
-          // }
-        // });
 
       });
 
